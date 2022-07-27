@@ -6,7 +6,7 @@ pipeline {
             steps {
 	            withCredentials([azureServicePrincipal('28927735-fb9c-482b-a7e2-715a6c814b72')]) {
 		    	sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-	                sh 'az group delete --name "azurerm_resource_group.main.name"' --yes
+	                sh 'az group delete --name "azurerm_resource_group.main.name" --yes'
 		        }
             }
         }
