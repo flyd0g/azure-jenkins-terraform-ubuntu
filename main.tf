@@ -105,6 +105,7 @@ resource "azurerm_linux_virtual_machine" "main" {
   location                        = azurerm_resource_group.main.location
   size                            = "Standard_D2s_v3"
   admin_username                  = "adam"
+  disable_password_authentication = false
   admin_password                  = "Key123$$"
   network_interface_ids = [
     azurerm_network_interface.main.id
