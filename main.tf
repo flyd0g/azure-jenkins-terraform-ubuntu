@@ -144,7 +144,7 @@ resource "azurerm_linux_virtual_machine" "main" {
 
   admin_ssh_key {
     username = "adam"
-    public_key = file(id_rsa.pub)
+    public_key = file("id_rsa.pub")
 #    public_key = tls_private_key.example_ssh.public_key_openssh
   }
 
