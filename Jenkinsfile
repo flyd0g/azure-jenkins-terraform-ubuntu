@@ -20,5 +20,12 @@ pipeline {
 		        }
             }
         }
+	stage('Terraform output') {
+            steps {
+	            withCredentials([azureServicePrincipal('28927735-fb9c-482b-a7e2-715a6c814b72')]) {
+	                sh 'terraform output public_ip_address -var "client_id=$AZURE_CLIENT_ID" -var "client_secret=$AZURE_CLIENT_SECRET" -var "subscription_id=$AZURE_SUBSCRIPTION_ID" -var "tenant_id=$AZURE_TENANT_ID"'
+		        }
+            }
+        }
     }
 }
