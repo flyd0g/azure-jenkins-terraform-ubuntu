@@ -5,7 +5,7 @@ pipeline {
         stage('Delete the Resource Group') {
             steps {
 	    	    withCredentials([azureServicePrincipal('28927735-fb9c-482b-a7e2-715a6c814b72')]) {
-			sh 'az group delete --resource-group adam-novel-ape --yes'
+	    	      sh 'az group delete --resource-group adam-novel-ape --yes'
 		    }	
             }
         }
