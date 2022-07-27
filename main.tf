@@ -105,14 +105,16 @@ resource "azurerm_linux_virtual_machine" "main" {
   location                        = azurerm_resource_group.main.location
   size                            = "Standard_D2s_v3"
   admin_username                  = "adam"
+  admin_password                  = "Key123$$"
   network_interface_ids = [
     azurerm_network_interface.main.id
   ]
 
-  admin_ssh_key {
+/*  admin_ssh_key {
     username = "adam"
     public_key = file("id_rsa.pub")
   }
+*/
 
   source_image_reference {
     publisher = "Canonical"
