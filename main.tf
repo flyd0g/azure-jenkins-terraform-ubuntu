@@ -17,9 +17,13 @@ provider "azurerm" {
   tenant_id       =   var.tenant_id
 }
 
+resource "random_pet" "rg-name" {
+  prefix    = var.prefix
+}
+
 resource "azurerm_resource_group" "main" {
-  name     = "${var.prefix}-resources"
-  location = var.location
+  name      = random_pet.rg-name.id
+  location  = var.location
 }
 
 resource "azurerm_virtual_network" "main" {
@@ -100,6 +104,25 @@ resource "azurerm_network_interface_security_group_association" "main" {
   network_security_group_id = azurerm_network_security_group.webserver.id
 }
 
+# Generate random text for a unique storage account name
+resource "random_id" "randomId" {
+  keepers = {
+    # Generate a new ID only when a new resource group is defined
+    resource_group = azurerm_resource_group.main.name
+  }
+
+  byte_length = 8
+}
+
+# Create storage account for boot diagnostics
+resource "azurerm_storage_account" "mystorageaccount" {
+  name                     = "diag${random_id.randomId.hex}"
+  location                 = azurerm_resource_group.main.location
+  resource_group_name      = azurerm_resource_group.main.name
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
 resource "azurerm_linux_virtual_machine" "main" {
   name                            = "${var.prefix}-vm"
   resource_group_name             = azurerm_resource_group.main.name
@@ -126,7 +149,12 @@ resource "azurerm_linux_virtual_machine" "main" {
   }
 
   os_disk {
-    storage_account_type = "Standard_LRS"
+    name                = "myOSDisk"
+    storage_account_type = "Premium_LRS"
     caching              = "ReadWrite"
+  }
+  
+  boot_diagnostics {
+    storage_account_uri = azurerm_storage_account.mystorageaccount.primary_blob_endpoint
   }
 }
