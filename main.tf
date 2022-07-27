@@ -123,6 +123,11 @@ resource "azurerm_storage_account" "mystorageaccount" {
   account_replication_type = "LRS"
 }
 
+resource "tls_private_key" "example_ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 resource "azurerm_linux_virtual_machine" "main" {
   name                            = "${var.prefix}-vm"
   resource_group_name             = azurerm_resource_group.main.name
@@ -137,7 +142,7 @@ resource "azurerm_linux_virtual_machine" "main" {
 
   admin_ssh_key {
     username = "adam"
-    public_key = file("id_rsa.pub")
+    public_key = tls_private_key.example_ssh.public_key_openssh
   }
 
   source_image_reference {
